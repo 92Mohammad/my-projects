@@ -1,9 +1,12 @@
 import "../css/style.css";
+import React from 'react'
 import { IoMenu } from "react-icons/io5";
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 
+type headerProps = {
 
+}
 export default function Header(props) {
   const navigate = useNavigate();
   const logOut = async() =>{

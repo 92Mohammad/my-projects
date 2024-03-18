@@ -1,12 +1,12 @@
 import "./landing.css";
-import { React, useRef, useState} from "react";
+import React, { useRef, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { userLogin , setMessages} from "../features/users/userSlice";
+import { userLogin , setMessages} from "features/users/userSlice";
 
 export default function LoginPage() {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const dispatch  = useDispatch();
   const {emailMessage, passwordMessage } = useSelector(state => state.users);
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
         if (response.status === 200){
           localStorage.setItem("token", data.token);
-          naviagte("/todoPage");
+          navigate("/todoPage");
         }
         else {
           dispatch(userLogin(data))
