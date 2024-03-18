@@ -1,0 +1,82 @@
+
+.sign-up-page,
+.login-up-page {
+    /* padding: 20px; */
+    margin: 0;
+    background-image: url('../images/background-image.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+}
+.sign-up-page h1, .login-up-page h1 {
+    position: absolute;
+    top:150px;
+    margin: 0; 
+    color: white;
+    font-family: sans-serif; 
+   
+}
+
+#form{
+    padding: 20px;
+    background: #e6e6ff;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;    
+    row-gap: 10px;
+    width: 450px;
+    height: 350px;   
+}
+#e-label, #p-label{
+    font-size: 11px;
+    color: crimson;
+    font-family:sans-serif;
+}
+#form input {
+    padding: 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 13px;
+    outline: none;
+}
+#checkbox-inptus {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#checkbox-inptus label {
+    font-size: 13px;
+    font-family:sans-serif;
+}
+.sumbit-btn {
+    font-size: 15px;
+    padding: 18px;
+    background: #9933ff;
+    border: none;
+    color : white;
+    border-radius: 5px;
+    cursor: pointer
+}
+.signin-page-link{
+    text-align: center;
+}
+.signin-page-link a {
+    text-decoration: none;
+    color: #9933ff;
+}
+
+@media (max-width: 600px) {
+    #form{
+        width: 300px;
+
+    }   
+}

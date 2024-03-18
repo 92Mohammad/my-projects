@@ -1,0 +1,3 @@
+Access Token : 1) An access token is digitally signed json web token(jwt) or we can say a encoded json string 
+                which contain some information related to user like (uesrId and like that)
+                2) Acces token should not store in local storage or in cookies
