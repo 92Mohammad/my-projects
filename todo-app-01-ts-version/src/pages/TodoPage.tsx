@@ -3,19 +3,19 @@ import Header from "../components/Header";
 import Todo from "../components/Todo";
 import { useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
-import { setTodos } from "../features/todos/todosSlice";
-
+import { setTodos } from "/features/todos/todosSlice";
+import { RootState } from "store";
 
 
 export default function TodoPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const todos = useSelector(state => state.todos.todoItems)
+  const todos = useSelector((state: RootState) => state.todos.todoItems)
 
   const textRefElement = useRef();
   
-  useEffect(() => {
-    const token = localStorage.getItem("token")
+  useEffect((): void => {
+    const token: string = localStorage.getItem("token")!
     if (!token){
       navigate('/login');
     }
@@ -31,8 +31,10 @@ export default function TodoPage() {
           authorization: localStorage.getItem("token"),
         },
       });
-      const data = await response.json();
-      dispatch(setTodos(data))
+      if (response.status === 200){
+        const data = await response.json();
+        dispatch(setTodos(data))
+      }
     } 
     catch (err) {
       console.error(err); 
@@ -46,7 +48,7 @@ export default function TodoPage() {
   const handleNewTodo = async() => {
     try {
 
-      const inputText = textRefElement.current.value;
+      const inputText: string = textRefElement.current.value;
       if (inputText !== ""){
         const response = await fetch("http://localhost:8000/createNewTodo", {
           method: "POST",
@@ -59,7 +61,6 @@ export default function TodoPage() {
           }),
         });
         if (response.status === 201) {
-          // await getAllTodo();
           // add new todo over here
           const newTodoItem = {
             todo_id: response.todo_id,
@@ -92,7 +93,6 @@ export default function TodoPage() {
               if (e.code === "Enter"){
                 handleNewTodo().then(r => console.log(r));
               }
-
             }}
           />
           <button

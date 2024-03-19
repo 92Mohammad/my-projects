@@ -1,6 +1,9 @@
 import { createSlice} from "@reduxjs/toolkit";
 
-const initialState = {
+export interface TodoState {
+    todoItems: Array<object>
+}
+const initialState: TodoState = {
     todoItems: [],
 }
 

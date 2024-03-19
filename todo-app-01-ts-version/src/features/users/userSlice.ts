@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import { RootState } from "store";
 
-const initialState = {
+interface userState {
+    emailMessage: string,
+    passwordMessage: string
+}
+const initialState: userState = {
     emailMessage: "",
     passwordMessage: ""
 }
@@ -35,6 +40,7 @@ const userSlice  = createSlice({
 
 
 export default userSlice.reducer;
+
 export const {userSignUp, userLogin, setMessages} = userSlice.actions;
 
 

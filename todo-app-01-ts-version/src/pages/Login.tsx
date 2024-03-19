@@ -4,32 +4,49 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin , setMessages} from "features/users/userSlice";
+import { RootState } from "store";
 
+
+interface UserLogin {
+  email: string,
+  password: string,
+}
 export default function LoginPage() {
   const navigate = useNavigate();
   const dispatch  = useDispatch();
-  const {emailMessage, passwordMessage } = useSelector(state => state.users);
+  const {emailMessage, passwordMessage } = useSelector((state: RootState) => state.users);
 
-  const emailRefElement = useRef();
-  const passwordRefElement = useRef();
-  const checkboxRefElement = useRef();
-  
+  const [user, setUser] = useState<UserLogin>({
+    email: "",
+    password: "",
+  })
 
+  const setUserFormValue = (e: React.FormEvent<HTMLInputElement>): void => {
+    const {name, value } = e.target as HTMLInputElement;
+    setUser((prevValue: UserLogin) => {
+      return {
+        ...prevValue,
+        [name]: value
+      }
+    })
+  }
   const handleLoginForm = async() => {
-    if (emailRefElement !== "" && passwordRefElement !== ""){
+    if (user.email !== "" && user.password !== ""){
       try {
-        const USER = {
-          email:  emailRefElement.current.value,
-          password: passwordRefElement.current.value,
+        const USER: UserLogin = {
+          email:  user.email,
+          password: user.password,
         }
-        const response = await fetch("http://localhost:8000/login", {
+        const url: string = "http://localhost:8000/login";
+
+        const response = await fetch(url, {
             method: "POST",
             headers: {
             "Content-Type": "application/json",
             },
             body: JSON.stringify(USER),
         });
-        const data = await response.json();
+        const data: any = await response.json();
 
         if (response.status === 200){
           localStorage.setItem("token", data.token);
@@ -38,7 +55,6 @@ export default function LoginPage() {
         else {
           dispatch(userLogin(data))
         }
-     
       }
       catch(error){
           console.log(error);
@@ -48,7 +64,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header/>
+      <Header isLogin={false}/>
       <main className="login-up-page">
         <h1>Please Login</h1>
         <div id="form">
@@ -57,9 +73,11 @@ export default function LoginPage() {
           </label>
           <input
             id="email"
+            name = "email"
+            value = {user.email}
             type="email"
             placeholder="Email"
-            ref = {emailRefElement}
+            onChange={(e) => setUserFormValue(e)}
             onFocus={(e) => dispatch(setMessages({inputType: e.target.type}))}
           />
           <label id="p-label" htmlFor="password">
@@ -67,22 +85,13 @@ export default function LoginPage() {
           </label>
           <input
             id="password"
+            name = "password"
+            value = {user.password}
             type="password"
             placeholder="Password"
-            ref = {passwordRefElement}
             onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
           />
 
-          <div id="checkbox-inptus">
-            <input  
-              id="checkbox"
-              type="checkbox"
-              name="isChecked"
-              ref = {checkboxRefElement}
-             
-            />
-            <label htmlFor="checkbox">all terms & conditions</label>
-          </div>
           <button
             className="sumbit-btn"             
             onClick = {() => handleLoginForm()}

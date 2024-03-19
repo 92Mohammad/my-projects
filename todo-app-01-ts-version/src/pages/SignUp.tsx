@@ -2,27 +2,37 @@ import "./landing.css";
 import React, { useState } from "react";
 import { Link , useNavigate} from "react-router-dom";
 import Header from "../components/Header";
-import { userSignUp, setMessages } from "../features/users/userSlice";
+import { userSignUp, setMessages } from "/features/users/userSlice";
 import { useDispatch , useSelector} from "react-redux";
+import { RootState } from "store";
+
+interface UserSignUp {
+  email: string,
+  password: string,
+  confirmPassword: string,
+
+}
 
 export default function SignUp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {emailMessage } = useSelector((state) => state.users);
+  const {emailMessage } = useSelector((state: RootState) => state.users);
 
-  // console.log('Inside signUp page: ',  emailMessage);
 
-  const [formData, setFormData] = useState({
+  const initialState: UserSignUp = {
     email: "",
     password: "",
     confirmPassword: "",
-  });
+  }
+  const [formData, setFormData] = useState<UserSignUp>(initialState);
 
-  const [passwordMessage, setPasswordMessage] = useState("");
 
-  function handleChange(event) {
+  const [passwordMessage, setPasswordMessage] = useState<string>("");
+
+  function handleChange(event: React.FormEvent<HTMLInputElement>):void {
     setPasswordMessage("");
-    const { name, value } = event.target;
+
+    const { name, value} = event.target as HTMLInputElement;
     setFormData((prevFormData) => {
       return {
         ...prevFormData,
@@ -59,7 +69,6 @@ export default function SignUp() {
         else {
           dispatch(userSignUp(data));
         }
-     
       }
       catch(error){
         console.log(error);
@@ -69,7 +78,7 @@ export default function SignUp() {
 
   return (
     <>
-    <Header/>
+    <Header isLogin={false}/>
       <main className="sign-up-page">
         <h1>Please Sign Up</h1>
         <div id="form">
@@ -81,7 +90,7 @@ export default function SignUp() {
             type="email"
             name="email"
             placeholder="Email"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
             value={formData.email}
             onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
           />
@@ -89,7 +98,7 @@ export default function SignUp() {
             type="password"
             name="password"
             placeholder="Password"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
             value={formData.password}
           />
           <label id="p-label" htmlFor="password">
@@ -100,7 +109,7 @@ export default function SignUp() {
             type="password"
             name="confirmPassword"
             placeholder="Confirm Password"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
             value={formData.confirmPassword}
 
           />
