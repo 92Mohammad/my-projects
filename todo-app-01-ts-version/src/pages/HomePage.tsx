@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import image from "../images/background-image.jpg"
 import "./home.css";
 
-type homePageProps = {
+export type homePageProps = {
     isLogin: boolean
 }
 export default function Homepage({isLogin}: homePageProps) {

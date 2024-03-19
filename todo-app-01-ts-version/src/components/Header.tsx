@@ -3,20 +3,28 @@ import React from 'react'
 import { IoMenu } from "react-icons/io5";
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
-
-type headerProps = {
-
+import { homePageProps } from "pages/HomePage";
+interface headerProps{
+  method: string,
+  headers: {
+    authorization: string
+  },
 }
-export default function Header(props) {
+
+
+export default function Header({isLogin}: homePageProps ) {
   const navigate = useNavigate();
-  const logOut = async() =>{
+  const logOut = async(): Promise<void> =>{
+    const payload: headerProps = {
+      method: "POST",
+      headers: {
+        authorization : localStorage.getItem("token")!,
+      }
+    }
+
     try {
-      const response = await fetch('http://localhost:8000/logout', {
-          method: "POST",
-          headers: {
-              "authorization" : localStorage.getItem("token"),
-          }
-      })
+
+      const response = await fetch('http://localhost:8000/logout', payload)
       
       const data = await response.json()
       if (response.status === 200){
@@ -24,13 +32,12 @@ export default function Header(props) {
           window.location.href = '/'
       }
       console.log(data)
-    }catch(error){
-      console.log("Error occurred: ", error)
-
+    }catch(error: any){
+      console.log("Error occurred: ", error.message)
     }
 
   }
-  const SignIn = () => {
+  const SignIn = ():void  => {
     navigate('/login')
   }
 
@@ -48,9 +55,9 @@ export default function Header(props) {
         <div className="right-header">
           <button
             className="Btn"
-            onClick = {props.isLogin ? logOut : SignIn }
+            onClick = {isLogin ? logOut : SignIn }
           >
-            {props.isLogin ? 'LogOut' : "Sign In" } 
+            {isLogin ? 'LogOut' : "Sign In" }
           </button>
           <IoMenu className="menu-btn"/>
         </div>
