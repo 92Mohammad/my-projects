@@ -28,9 +28,11 @@ export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewT
    async function updateTodoTitle() {
         try{
             const url = 'http://localhost:8000/updateTodo'
+
             const updateTodoParameter: RequestParameter = {
                 method: "POST",
                 headers :{
+                    "Content-Type": "application/json",
                     authorization: localStorage.getItem("token")!
                 },
                 body: JSON.stringify({
@@ -42,12 +44,15 @@ export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewT
             const res = await fetch(url, updateTodoParameter)
 
             if (res.status === 200){
+                console.log('inside 200')
                 const data = await res.json();
+                console.log('update todo response: ', data)
                 const updatedTodo = todos.map(todo => todo.todo_id === id ? {...todo, task: editTitle} : todo);
                 // dispatch(setTodos(updatedTodo));
                 setTodos(updatedTodo)
                 setEdit(false);
             }
+
         }
         catch(err: unknown){
             console.log(err);
@@ -61,7 +66,7 @@ export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewT
           const deleteParameter: RequestParameter = {
               method: "POST",
               headers: {
-
+                  "Content-Type": "application/json",
                   authorization: localStorage.getItem("token")!,
               },
               body: JSON.stringify({

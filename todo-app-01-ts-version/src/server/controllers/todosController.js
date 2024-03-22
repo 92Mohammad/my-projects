@@ -35,6 +35,7 @@ module.exports = {
 
     updateTodo: (req, res) => {
         const { todoId, title } = req.body
+        console.log(todoId, title )
         const sql = 'UPDATE todos SET task = ? WHERE todo_id = ?'
         connection.query(sql, [title, todoId], async (err, results) => {
             if (err){

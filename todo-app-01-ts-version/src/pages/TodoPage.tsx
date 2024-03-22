@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState} from "react";
 import Header from "../components/Header";
 import Todo from "../components/Todo";
-import { useDispatch, useSelector} from 'react-redux'
+// import { useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
 // import { setTodos } from "/features/todos/todosSlice";
 // import { RootState } from "store";
@@ -14,15 +14,13 @@ export  interface TodoArray {
 
 export type RequestParameter = {
   method: string,
-  headers: {
-    authorization: string
-  },
+  headers: HeadersInit,
   body?: string
 }
 
 export default function TodoPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const todos = useSelector((state: RootState) => state.todos.todoItems)
   const [todos, setTodos] = useState<TodoArray[]>([]);
   const [title, setTitle] = useState<string>("")
@@ -43,6 +41,7 @@ export default function TodoPage() {
       const getTodoParameter : RequestParameter = {
         method: "GET",
         headers: {
+          "Content-Type": "application/json",
           authorization: localStorage.getItem("token")!,
         },
       }
@@ -69,6 +68,7 @@ export default function TodoPage() {
         const newTodoParameter: RequestParameter = {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             authorization: localStorage.getItem("token")!,
           },
           body: JSON.stringify({
