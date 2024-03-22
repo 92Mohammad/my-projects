@@ -12,7 +12,7 @@ export  interface TodoArray {
   task : string
 }
 
-export type RequestParameter = {
+export interface RequestParameter {
   method: string,
   headers: HeadersInit,
   body?: string

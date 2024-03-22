@@ -4,20 +4,16 @@ import { IoMenu } from "react-icons/io5";
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 import { homePageProps } from "pages/HomePage";
-interface headerProps{
-  method: string,
-  headers: {
-    authorization: string
-  },
-}
+import { RequestParameter} from "pages/TodoPage";
 
 
 export default function Header({isLogin}: homePageProps ) {
   const navigate = useNavigate();
   const logOut = async(): Promise<void> =>{
-    const payload: headerProps = {
+    const payload: RequestParameter= {
       method: "POST",
       headers: {
+        "Content-Type": 'application/json',
         authorization : localStorage.getItem("token")!,
       }
     }
@@ -31,7 +27,7 @@ export default function Header({isLogin}: homePageProps ) {
           localStorage.removeItem("token");
           window.location.href = '/'
       }
-      console.log(data)
+      console.log('this is logout response; ', data)
     }catch(error: any){
       console.log("Error occurred: ", error.message)
     }
