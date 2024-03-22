@@ -2,9 +2,9 @@ import "./landing.css";
 import React, { useState } from "react";
 import { Link , useNavigate} from "react-router-dom";
 import Header from "../components/Header";
-import { userSignUp, setMessages } from "/features/users/userSlice";
-import { useDispatch , useSelector} from "react-redux";
-import { RootState } from "store";
+// import { userSignUp, setMessages } from "/features/users/userSlice";
+// import { useDispatch , useSelector} from "react-redux";
+// import { RootState } from "store";
 
 interface UserSignUp {
   email: string,
@@ -15,8 +15,8 @@ interface UserSignUp {
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const {emailMessage } = useSelector((state: RootState) => state.users);
+  // const dispatch = useDispatch();
+  // const {emailMessage } = useSelector((state: RootState) => state.users);
 
 
   const initialState: UserSignUp = {
@@ -67,7 +67,7 @@ export default function SignUp() {
           navigate('/login')
         }
         else {
-          dispatch(userSignUp(data));
+          // dispatch(userSignUp(data));
         }
       }
       catch(error){
@@ -83,18 +83,20 @@ export default function SignUp() {
         <h1>Please Sign Up</h1>
         <div id="form">
           <label id="e-label" htmlFor="email">
-            <span>{emailMessage && "*"}</span> {emailMessage}
+            {/*<span>{emailMessage && "*"}</span> {emailMessage}*/}
           </label>
           <input
+              required={true}
             id="email"
             type="email"
             name="email"
             placeholder="Email"
             onChange={(e) => handleChange(e)}
             value={formData.email}
-            onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
+            // onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
           />
           <input
+              required = {true}
             type="password"
             name="password"
             placeholder="Password"
@@ -105,6 +107,7 @@ export default function SignUp() {
             <span>{passwordMessage && "*"}</span> {passwordMessage}
           </label>
           <input
+              required ={true}
             id="password"
             type="password"
             name="confirmPassword"

@@ -1,66 +1,79 @@
-import { MdEdit, MdDelete } from "react-icons/md";
-import React, {useState, useRef, useEffect} from "react";
-import { Reorder } from "framer-motion";
-import { useSelector, useDispatch} from "react-redux";
-import { setTodos} from "../features/todos/todosSlice";
+import {MdDelete, MdEdit} from "react-icons/md";
+import React, {useEffect, useRef, useState} from "react";
+// import { useSelector, useDispatch} from "react-redux";
+// import { setTodos} from "../features/todos/todosSlice";
+import {TodoArray} from "pages/TodoPage";
+import {RequestParameter} from 'pages/TodoPage'
 
-export default function Todo(props) {
-    const [edit, setEdit] = useState(false);
-    const [editTitle, setEditTitle] = useState(props.title);
-    const [checkBox, setCheckBox] = React.useState(false);
-    const todos = useSelector(state => state.todos.todoItems);
+type TodoProps = {
+    id: number,
+    title: string,
+    todos:  TodoArray[],
+    setTodos:  React.Dispatch<React.SetStateAction<TodoArray[]>>
+    getAllTodo: () => Promise<void>,
+    handleNewTodo: () =>  Promise<void>,
+}
 
-    const dispatch = useDispatch();
-    function handleChange(event) {
-        setCheckBox(event.target.checked);
+export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewTodo}: TodoProps) {
+    const [edit, setEdit] = useState<boolean>(false);
+    const [editTitle, setEditTitle] = useState<string>(title);
+    const [checkBox, setCheckBox] = useState<boolean>(false);
+    // const todos = useSelector(state => state.todos.todoItems);
+    const editTitleRef = useRef<HTMLInputElement>(null);
+    // const dispatch = useDispatch();
+    function handleChange(event: React.FormEvent<EventTarget> ) {
+        const {checked} = event.target as HTMLInputElement;
+        setCheckBox(checked);
     }
    async function updateTodoTitle() {
         try{
             const url = 'http://localhost:8000/updateTodo'
-            const res = await fetch(url, {
+            const updateTodoParameter: RequestParameter = {
                 method: "POST",
                 headers :{
-                    "Content-Type": "application/json",
-                    authorization: localStorage.getItem("token")
+                    authorization: localStorage.getItem("token")!
                 },
                 body: JSON.stringify({
-                    todoId: props.id,
+                    todoId: id,
                     title: editTitle
                 })
-            })
+            }
+
+            const res = await fetch(url, updateTodoParameter)
 
             if (res.status === 200){
                 const data = await res.json();
-                const updatedTodo = todos.map(todo => todo.todo_id === props.id ? {...todo, task: editTitle}: todo);
-                dispatch(setTodos(updatedTodo));
+                const updatedTodo = todos.map(todo => todo.todo_id === id ? {...todo, task: editTitle} : todo);
+                // dispatch(setTodos(updatedTodo));
+                setTodos(updatedTodo)
                 setEdit(false);
             }
         }
-        catch(err){
-            console.log(err.message);
+        catch(err: unknown){
+            console.log(err);
         }
     }
-    const editTitleRef = useRef();
+
 
   const deleteTodo = async() => {
       try {
-          const response = await fetch(
-              "http://localhost:8000/deleteTodo",
-              {
-                  method: "POST",
-                  headers: {
-                      "Content-Type": "application/json",
-                      authorization: localStorage.getItem("token"),
-                  },
-                  body: JSON.stringify({
-                      todoId: props.id,
-                  }),
-              }
-          );
+          const deleteUrl = "http://localhost:8000/deleteTodo";
+          const deleteParameter: RequestParameter = {
+              method: "POST",
+              headers: {
+
+                  authorization: localStorage.getItem("token")!,
+              },
+              body: JSON.stringify({
+                  todoId: id,
+              }),
+          }
+          const response = await fetch(deleteUrl, deleteParameter);
           if (response.status === 204) {
               // filter the todos over here
-              const remainingTodos = todos.filter(todo => todo.todo_id !== props.id);
-              dispatch(setTodos(remainingTodos));
+              const remainingTodos = todos.filter(todo => todo.todo_id !== id);
+              // dispatch(setTodos(remainingTodos));
+              setTodos(remainingTodos);
           }
       } catch (error) {
           console.error(error);
@@ -88,7 +101,7 @@ export default function Todo(props) {
               {
                   edit ? (
                       <input
-                          ref ={editTitleRef}
+                          ref = {editTitleRef}
                           className = "edit-title-input"
                           value = {editTitle}
                           type="text"
@@ -102,7 +115,7 @@ export default function Todo(props) {
                       />
                   ) : (
                       <p style={{textDecoration: checkBox ? "line-through" : "none"}}>
-                          {props.title}
+                          {title}
                       </p>
                   )
               }

@@ -3,15 +3,29 @@ import Header from "../components/Header";
 import Todo from "../components/Todo";
 import { useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
-import { setTodos } from "/features/todos/todosSlice";
-import { RootState } from "store";
+// import { setTodos } from "/features/todos/todosSlice";
+// import { RootState } from "store";
 
+
+export  interface TodoArray {
+  todo_id: number,
+  task : string
+}
+
+export type RequestParameter = {
+  method: string,
+  headers: {
+    authorization: string
+  },
+  body?: string
+}
 
 export default function TodoPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const todos = useSelector((state: RootState) => state.todos.todoItems)
-
+  // const todos = useSelector((state: RootState) => state.todos.todoItems)
+  const [todos, setTodos] = useState<TodoArray[]>([]);
+  const [title, setTitle] = useState<string>("")
   const textRefElement = useRef();
   
   useEffect((): void => {
@@ -25,15 +39,18 @@ export default function TodoPage() {
 
   const getAllTodo = async () => {
     try {
-      const response = await fetch("http://localhost:8000/getAllTodo", {
+      const getTodoUrl: string = "http://localhost:8000/getAllTodo";
+      const getTodoParameter : RequestParameter = {
         method: "GET",
         headers: {
-          authorization: localStorage.getItem("token"),
+          authorization: localStorage.getItem("token")!,
         },
-      });
+      }
+      const response = await fetch(getTodoUrl, getTodoParameter);
       if (response.status === 200){
-        const data = await response.json();
-        dispatch(setTodos(data))
+        const data = await response.json() ;
+        // dispatch(setTodos(data))
+        setTodos(data);
       }
     } 
     catch (err) {
@@ -47,29 +64,30 @@ export default function TodoPage() {
 
   const handleNewTodo = async() => {
     try {
-
-      const inputText: string = textRefElement.current.value;
-      if (inputText !== ""){
-        const response = await fetch("http://localhost:8000/createNewTodo", {
+      if (title !== ""){
+        const url: string = "http://localhost:8000/createNewTodo";
+        const newTodoParameter: RequestParameter = {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            authorization: localStorage.getItem("token"),
+            authorization: localStorage.getItem("token")!,
           },
           body: JSON.stringify({
-            task: inputText,
+            task: title,
           }),
-        });
+        }
+
+        const response = await fetch(url, newTodoParameter) ;
         if (response.status === 201) {
+          const data = await response.json();
           // add new todo over here
-          const newTodoItem = {
-            todo_id: response.todo_id,
-            task: inputText,
+          const newTodoItem: TodoArray = {
+            todo_id: data.todo_id,
+            task: title,
           }
 
-          dispatch(setTodos([...todos, newTodoItem]))
-          // console.log('new todos', newTodos);
-          textRefElement.current.value = "";
+          // dispatch(setTodos([...todos, newTodoItem]))
+          setTodos([...todos, newTodoItem]);
+          setTitle("");
         }
       }
     } catch (error) {
@@ -88,7 +106,8 @@ export default function TodoPage() {
             type="text"
             placeholder="Enter new todo..."
             name="todo"
-            ref = {textRefElement}
+            value = {title}
+            onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
               if (e.code === "Enter"){
                 handleNewTodo().then(r => console.log(r));
@@ -106,13 +125,14 @@ export default function TodoPage() {
             {todos.length === 0 ? (
                 <h1>You have 0 todo item</h1>
             ) : (
-                todos.map((todo, index) => {
+                todos.map((todo: TodoArray, index: number) => {
                   return <Todo
                       key={index}
                       title ={todo.task}
                       id={todo.todo_id}
                       getAllTodo={getAllTodo}
-                      todo = {todo}
+                      setTodos={setTodos}
+                      todos = {todos}
                       handleNewTodo = {handleNewTodo}
                   />;
                 })

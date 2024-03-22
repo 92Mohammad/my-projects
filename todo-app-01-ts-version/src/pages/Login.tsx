@@ -2,9 +2,9 @@ import "./landing.css";
 import React, { useRef, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { useDispatch, useSelector } from "react-redux";
-import { userLogin , setMessages} from "features/users/userSlice";
-import { RootState } from "store";
+// import { useDispatch, useSelector } from "react-redux";
+// import { userLogin , setMessages} from "features/users/userSlice";
+// import { RootState } from "store";
 
 
 interface UserLogin {
@@ -13,8 +13,8 @@ interface UserLogin {
 }
 export default function LoginPage() {
   const navigate = useNavigate();
-  const dispatch  = useDispatch();
-  const {emailMessage, passwordMessage } = useSelector((state: RootState) => state.users);
+  // const dispatch  = useDispatch();
+  // const {emailMessage, passwordMes sage } = useSelector((state: RootState) => state.users);
 
   const [user, setUser] = useState<UserLogin>({
     email: "",
@@ -53,7 +53,7 @@ export default function LoginPage() {
           navigate("/todoPage");
         }
         else {
-          dispatch(userLogin(data))
+          // dispatch(userLogin(data))
         }
       }
       catch(error){
@@ -69,7 +69,7 @@ export default function LoginPage() {
         <h1>Please Login</h1>
         <div id="form">
           <label id="e-label" htmlFor="email">
-            <span>{emailMessage && "*"}</span> {emailMessage}
+            {/*<span>{emailMessage && "*"}</span> {emailMessage}*/}
           </label>
           <input
             id="email"
@@ -78,10 +78,10 @@ export default function LoginPage() {
             type="email"
             placeholder="Email"
             onChange={(e) => setUserFormValue(e)}
-            onFocus={(e) => dispatch(setMessages({inputType: e.target.type}))}
+            // onFocus={(e) => dispatch(setMessages({inputType: e.target.type}))}
           />
           <label id="p-label" htmlFor="password">
-            <span>{passwordMessage && "*"}</span> {passwordMessage}
+            {/*<span>{passwordMessage && "*"}</span> {passwordMessage}*/}
           </label>
           <input
             id="password"
@@ -89,7 +89,8 @@ export default function LoginPage() {
             value = {user.password}
             type="password"
             placeholder="Password"
-            onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
+            onChange={(e) => setUserFormValue(e)}
+            // onFocus={(e) => dispatch(setMessages({inputType : e.target.type}))}
           />
 
           <button
