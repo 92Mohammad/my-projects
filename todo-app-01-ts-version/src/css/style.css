@@ -206,12 +206,14 @@ body {
     background:  #d7d7c1;
     margin-right: 3px;
     border-radius: 2px;
+    cursor: pointer;
 }
 .delete-btn{
     padding: 8px;
     color: crimson;
     background:  #d7d7c1;
     border-radius: 2px;
+    cursor: pointer;
 }
 .right-tods-section{
     margin-right: 10px;

@@ -37,7 +37,7 @@ export default function TodoPage() {
 
   const getAllTodo = async () => {
     try {
-      const getTodoUrl: string = "http://localhost:8000/getAllTodo";
+      const getTodoUrl: string = "http://localhost:8000/todo/getAllTodo";
       const getTodoParameter : RequestParameter = {
         method: "GET",
         headers: {
@@ -64,7 +64,7 @@ export default function TodoPage() {
   const handleNewTodo = async() => {
     try {
       if (title !== ""){
-        const url: string = "http://localhost:8000/createNewTodo";
+        const url: string = "http://localhost:8000/todo/createNewTodo";
         const newTodoParameter: RequestParameter = {
           method: "POST",
           headers: {

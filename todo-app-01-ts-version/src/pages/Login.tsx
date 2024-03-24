@@ -37,7 +37,7 @@ export default function LoginPage() {
           email:  user.email,
           password: user.password,
         }
-        const url: string = "http://localhost:8000/login";
+        const url: string = "http://localhost:8000/auth/login";
 
         const response = await fetch(url, {
             method: "POST",

@@ -1,4 +1,4 @@
-const mysql = require('mysql2')
+import  mysql from 'mysql2';
 require('dotenv').config();
 // create connection
 const connection = mysql.createConnection({
@@ -16,4 +16,4 @@ connection.connect((err) => {
     }
     console.log('Connected to the database')
 });
-module.exports = connection;
+export default connection;

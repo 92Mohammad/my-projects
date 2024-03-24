@@ -20,12 +20,13 @@ export default function Header({isLogin}: homePageProps ) {
 
     try {
 
-      const response = await fetch('http://localhost:8000/logout', payload)
+      const response = await fetch('http://localhost:8000/auth/logout', payload)
       
       const data = await response.json()
       if (response.status === 200){
-          localStorage.removeItem("token");
-          window.location.href = '/'
+        console.log('logout...')
+        localStorage.removeItem("token");
+        window.location.href = '/'
       }
       console.log('this is logout response; ', data)
     }catch(error: any){

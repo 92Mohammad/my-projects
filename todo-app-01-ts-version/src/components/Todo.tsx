@@ -27,10 +27,10 @@ export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewT
     }
    async function updateTodoTitle() {
         try{
-            const url = 'http://localhost:8000/updateTodo'
+            const url = 'http://localhost:8000/todo/updateTodo'
 
             const updateTodoParameter: RequestParameter = {
-                method: "POST",
+                method: "PATCH",
                 headers :{
                     "Content-Type": "application/json",
                     authorization: localStorage.getItem("token")!
@@ -62,7 +62,7 @@ export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewT
 
   const deleteTodo = async() => {
       try {
-          const deleteUrl = "http://localhost:8000/deleteTodo";
+          const deleteUrl = "http://localhost:8000/todo/deleteTodo";
           const deleteParameter: RequestParameter = {
               method: "POST",
               headers: {
@@ -74,9 +74,10 @@ export default function Todo({id, title, todos, setTodos, getAllTodo, handleNewT
               }),
           }
           const response = await fetch(deleteUrl, deleteParameter);
-          if (response.status === 204) {
+          if (response.status === 202) {
               // filter the todos over here
               const remainingTodos = todos.filter(todo => todo.todo_id !== id);
+              console.log('all remaining todos after deletion: ', remainingTodos)
               // dispatch(setTodos(remainingTodos));
               setTodos(remainingTodos);
           }
