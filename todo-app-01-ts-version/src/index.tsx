@@ -9,8 +9,8 @@ import { Provider } from 'react-redux';
 
 const rootElement  = document.getElementById('root');
 
-// @ts-ignore
-const root = ReactDOM.createRoot(rootElement);
+
+const root = ReactDOM.createRoot(rootElement as Element);
 root.render(
   <React.StrictMode>
       <App />
