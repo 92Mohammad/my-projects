@@ -2,15 +2,18 @@ import express from 'express'
 import jwt from "jsonwebtoken";
 const router = express.Router();
 import bcrypt from 'bcrypt'
+import auth from '../middleware/jwtAuthenticate'
 import User from '../models/user.model'
 
 interface SignUp {
+    _id: string,
     username: string,
     email: string,
     password: string
 }
 
 interface Login {
+    _id: string,
     username: string,
     password: string
 }
@@ -51,51 +54,39 @@ router.post('/login', async (req, res) => {
             return res.status(402).json( { message: "User Not found"});
         }
         else {
-            const ans = await bcrypt.compare(password, user.password)
+            const matchPassword = await bcrypt.compare(password, user.password)
+            if (matchPassword){
+                const token = jwt.sign({ userId: user._id } , process.env.JWT_SECRET!, { expiresIn: 'id'} )
+                return res.status(201).json({message: 'login successfully' ,  jwtToken: token })
+            }
         }
-
-
     }
     catch(error: any){
         return res.status(500).json({ error: error.message})
     }
+})
 
 
-    try {
+router.post('/logout', auth, (req, res) => {
 
-        const sql = 'SELECT * FROM users WHERE user_email = ?'
-        connection.query(sql, [email], async (err, results) => {
-            if (err) {
-                console.log("Failed query: ", err.message);
-            }
-            else {
-                // It can be possible that user enter a wrong password so wen need  to chekc here
-                if (results.length === 0) {
-                    // means that user with the email does not exist
-                    return res.send({ message: "Email not found" })
-                }
-
-                const userPassword = results[0].user_password
-
-                if (await bcrypt.compare(password, userPassword)) {
-                    // lets create a token so that we can identify the user in future request
-                    const userId = { userId: results[0].user_id }
-                    const token = jwt.sign(userId, process.env.JWT_SECRET)
-
-                    return res.status(201).send({ jwtToken: token })
-
-                }
-                else {
-                    return res.status(400).send({ message: "Incorrect!! password" })
-
-                }
-            }
-        })
-
-    }
+    return res.status(200).json({ message: 'Successfully logout'})
 
 
+    // const token = req.headers["authorization"]
+    // // put the token in invalidate token so that in future any one access it will not be able to access the private content
+    // const sql = "INSERT INTO expireTokens(invalidToken) VALUE(?)"
+    // connection.query(sql, [token], (err, results) => {
+    //     if (err) {
+    //         console.log("Failed query : ", err.message)
+    //     }
+    //     else {
+    //         return res.status(200).send({ message: "LogOut successfully" })
+    //
+    //     }
+    // })
 
 })
+
+
 
 export default router;

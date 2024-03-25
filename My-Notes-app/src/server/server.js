@@ -17,94 +17,11 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/logout', auth, (req, res) => {
-    const token = req.headers["authorization"]
-    // put the token in invalidate token so that in future any one access it will not be able to access the private content
-    const sql = "INSERT INTO expireTokens(invalidToken) VALUE(?)"
-    connection.query(sql, [token], (err, results) => {
-        if (err) {
-            console.log("Failed query : ", err.message)
-        }
-        else {
-            return res.status(200).send({ message: "LogOut successfully" })
-
-        }
-    })
-
-})
-
-function auth(req, res, next) {
-    const authheader = req.headers["authorization"]
-
-    if (!authheader) {
-        return res.status(500).send({ message: "Missing auth header" })
-    }
-    // now decode the authorization header
-    const decoded = jwt.verify(authheader, process.env.JWT_SECRET)
-
-    if (decoded && decoded.userId) {
-        req.userId = decoded.userId;
-        next();
-    }
-    else {
-        return res.status(500).send({ message: "Incorrect!! token" })
-    }
-}
 
 
-
-app.get('/notes', auth, (req, res) => {
-    const userId = req.userId
-    const currentToken = req.headers["authorization"]
-    // check the whether currentToken lies in table of invalidate token or not 
-    const sql = 'SELECT *FROM expireTokens  WHERE invalidToken = ? '
-    connection.query(sql, [currentToken], (err, results) => {
-        if (err) {
-            console.log('Query Failed: ', err.message)
-            return res.status(500)
-        }
-        else {
-            // if results length === 0 it means all is ok
-            if (results.length === 0) {
-                // write a new query to fetch all the notes form notes table 
-                const sql1 = 'SELECT note_id, note_content FROM notes WHERE userId = ?'
-                connection.query(sql1, [userId], (err, results) => {
-                    if (err) {
-                        console.log('Query Failed: ', err.message)
-                        return res.status(500)
-                    }
-                    else {
-                        return res.status(200).send(results)
-                    }
-                })
-            }
-            else {
-                // means that some one has access to old token and he is making request for accessign content of a user
-                return res.status(401);
-
-            }
-        }
-    })
-})
 
 
 // below route is setup for creating new notes in database
-
-app.post('/createNotes', auth, (req, res) => {
-
-    const noteTitle = req.body.title
-    const userId = req.userId
-    const sql = 'INSERT INTO notes(note_title, userId) VALUES(?, ?)'
-    connection.query(sql, [noteTitle, userId], (err, results) => {
-        if (err) {  
-            console.log("Query failed: ", err.message)
-            return res.status(500).send({ message: "Query failed" })
-        }
-        else {
-            return res.status(200).send({ message: "notes created successfully" })
-        }
-    })
-})
 
 
 app.post('/deleteNote', auth, (req, res) => {
