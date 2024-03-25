@@ -4,23 +4,22 @@ import Window from '../components/Window'   // this is child1
 import Editor from '../components/Editor'
 import '../css/note.css'
 import { useState, useEffect } from 'react'
-
+import { Tab } from '../utils'
 
 
 export default function NotePage() {
     const [editor, setEditor] = useState([])
+    const [tabs, setTabs] = useState<Tab[]>([]);
+    const [content , setContent] = useState<string>('');
 
-    const [tabs, setTabs] = useState([])
-
-    const [content , setContent] = useState('');
-    const handleChange = (value) => {
+    const handleChange = (value: string) => {
         setContent(value);  
-      };
+    };
     
-    const openEditor = (Title, Id) => {
-        setEditor((prevEditor) => [...prevEditor, {}])
-    }
-    
+    // const openEditor = (Title: string, Id: number): void => {
+    //     setEditor((prevEditor) => [...prevEditor, {}])
+    // }
+    //
     const getAllOpenTab = async() => {
         try {
             const response = await fetch('http://localhost:8000/getAllOpenTab', {
@@ -31,16 +30,17 @@ export default function NotePage() {
             })
 
             if (response.status === 200){
-                const data = await response.json();
+                const data = await response.json()
                 setTabs(data);
             }
         }
         catch(error){
             console.log(error);
         }
-    } 
+    }
+
     useEffect(() => {
-        // calling the getAllOpenTab functio to get the open tab list
+        // calling the getAllOpenTab function to get the open tab list
         getAllOpenTab();
     }, [])
 
@@ -97,12 +97,12 @@ export default function NotePage() {
   }, [])
 
 
-
-  
-
     return (
         <main>
-            <SideBar getAllOpenTab = {getAllOpenTab} openNewNoteEditor = {openEditor} />
+            <SideBar
+                getAllOpenTab = {getAllOpenTab}
+                // openNewNoteEditor = {openEditor}
+            />
             <div className='rigth-section'>
                 <div className='tabs-and-save-btn'>
                     <div className='window-container'>
@@ -130,8 +130,6 @@ function EditorBackground() {
                 <h1>Write your thoughts</h1>
             </div>
         </>
-
-
     )
 }
 

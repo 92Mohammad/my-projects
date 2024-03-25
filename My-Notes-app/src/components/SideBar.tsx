@@ -1,22 +1,30 @@
-// BiSolidUserCircle
 import { BiSolidUserCircle, BiChevronDown } from "react-icons/bi";
-//
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import { FaUserAlt } from "react-icons/fa";
 import Notes from "./Notes";
 import "../css/sidebar.css";
-import { React, useEffect, useState, useMemo } from "react";
+import {
+    SideBarProps,
+    RequestParameter,
+    Note,
+    InputBoxProps,
+    ButtonProps
+} from "../utils";
+
+import React, { useEffect, useState } from "react";
+import { useNavigate} from "react-router-dom";
 
 
-export default function SideBar(props) {
-  
+export default function SideBar({getAllOpenTab}: SideBarProps) {
+  const navigate = useNavigate();
+
   const [click, setClick] = useState({
     openInput: false,
     closeInput: true,
   });
 
-  const [notes, setNotes] = useState([]);
-  const [logout, setLogout] = useState(false);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [logout, setLogout] = useState<boolean>(false);
 
   function openInputBox() {
     setClick((prevClick) => {
@@ -28,16 +36,18 @@ export default function SideBar(props) {
     });
   }
 
-  const createNotes = async (Title) => {
+  const createNotes = async (Title: string) => {
     try {
-      const response = await fetch("http://localhost:8000/postNotes", {
+      const createNoteParameter: RequestParameter = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: localStorage.getItem("jwtToken"),
+          authorization: localStorage.getItem("jwtToken")!,
         },
         body: JSON.stringify({ title: Title }),
-      });
+      }
+
+      const response = await fetch("http://localhost:8000/createNotes", createNoteParameter);
 
       if (response.status === 200) {
         setClick((prevClick) => {
@@ -48,10 +58,14 @@ export default function SideBar(props) {
           };
         });
         // when a new note added successfully then call the getAllNotes method to fetch the all notes along with the new notes
-        getAllNotes();
-        
+        const data = await response.json();
+        const newNote: Note = {
+          note_id: data.note_id,
+          note_title: Title
+        }
+        setNotes((prevNote) => [...prevNote, newNote])
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.message);
     }
   };
@@ -59,18 +73,20 @@ export default function SideBar(props) {
   
   const getAllNotes = async () => {
     try {
-        const res = await fetch("http://localhost:8000/notes", {
-            method: "GET",
-            headers: {
-                authorization: localStorage.getItem("jwtToken"),
-            },
-        });
+      const getNotesParameter: RequestParameter = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("jwtToken")!,
+        },
+      }
+        const res = await fetch("http://localhost:8000/notes", getNotesParameter);
 
         if (res.status === 200) {
             const data = await res.json();
             setNotes(data);
         }
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message);
     }
 };
@@ -89,27 +105,26 @@ export default function SideBar(props) {
 
   const logOut = async () => {
     try {
-      const response = await fetch("http://localhost:8000/logout", {
+      const logOutParameter: RequestParameter = {
         method: "POST",
         headers: {
-          authorization: localStorage.getItem("jwtToken"),
+          authorization: localStorage.getItem("jwtToken")!,
         },
-      });
+      }
+      const response = await fetch("http://localhost:8000/logout", logOutParameter);
       if (response.status === 200) {  
         //means that user successfully logout
         //  delete the token from localStorage
         localStorage.removeItem("jwtToken");
 
         // navigate the user to home page
-        window.location.href = "/";
+        navigate('/')
+        // window.location.href = "/";
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.message);
     }
   };
-
-
-
 
   return (
     <>
@@ -145,9 +160,9 @@ export default function SideBar(props) {
             key={index}
             noteId={note.note_id}
             title={note.note_title}
-            getAllOpenTab = {props.getAllOpenTab} 
+            getAllOpenTab = {getAllOpenTab}
             getAllNotes = {getAllNotes}
-            openNewNoteEditor = {props.openEditor}
+            // openNewNoteEditor = {props.openEditor}
             // define the function of opening a new editor associated with the current Note in side baar
           />
         ))}
@@ -156,25 +171,27 @@ export default function SideBar(props) {
   );
 }
 
-function InputBox(props) {
-  const [input, setInput] = useState("");
-  function handleChange(event) {
-    setInput(event.target.value);
-  }
+function InputBox({ createNotes }: InputBoxProps) {
+  const [input, setInput] = useState<string>("");
+
   return (
     <>
       <div className="input-title">
-        <input placeholder="Note..." type="text" onChange={handleChange} />
-        <button onClick={() => props.createNotes(input)}>+ Create</button>
+        <input
+            placeholder="Note..."
+            type="text"
+            onChange= {(e) => setInput(e.target.value)}
+        />
+        <button onClick={() => createNotes(input)}>+ Create</button>
       </div>
     </>
   );
 }
 
-function CreateNoteButton(props) {
+function CreateNoteButton({openInputBox}: ButtonProps) {
   return (
     <>
-      <button className="create-note-btn" onClick={props.openInputBox}>
+      <button className="create-note-btn" onClick={ () => openInputBox() }>
         + Create New Note
       </button>
     </>

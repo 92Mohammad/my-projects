@@ -1,8 +1,9 @@
 import "../css/editor.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { EditorProps } from "../utils";
 
-export default function Editor({content, handleChange}) {
+export default function Editor({content, handleChange}: EditorProps) {
 
   return (
     <>

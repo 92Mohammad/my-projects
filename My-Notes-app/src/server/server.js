@@ -152,7 +152,7 @@ app.get('/notes', auth, (req, res) => {
             // if results length === 0 it means all is ok
             if (results.length === 0) {
                 // write a new query to fetch all the notes form notes table 
-                const sql1 = 'SELECT *FROM notes WHERE userId = ?'
+                const sql1 = 'SELECT note_id, note_content FROM notes WHERE userId = ?'
                 connection.query(sql1, [userId], (err, results) => {
                     if (err) {
                         console.log('Query Failed: ', err.message)
@@ -175,7 +175,7 @@ app.get('/notes', auth, (req, res) => {
 
 // below route is setup for creating new notes in database
 
-app.post('/postNotes', auth, (req, res) => {
+app.post('/createNotes', auth, (req, res) => {
 
     const noteTitle = req.body.title
     const userId = req.userId

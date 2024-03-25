@@ -1,23 +1,39 @@
 import "../css/signup.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import Navbar from "../components/NavBar";
-import { Link } from "react-router-dom";
-export default function SignupPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from '../hooks/useForm'
+export default function LoginPage() {
+
+  const { formData, handleForm } = useForm({
+      username: "",
+      password: "",
   });
-  function handleForm(e) {
-    const { name, value } = e.target;
-    setFormData((prevData) => {
-      return {
-        ...prevData,
-        [name]: value,
-      };
-    });
+  const navigate = useNavigate();
+
+  const userLogin = async() => {
+    try {
+      const response = await fetch("http://localhost:8000/login",  {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+      const data = await response.json();
+      console.log(data)
+      if (response.status === 201){
+        localStorage.setItem("jwtToken", data.jwtToken);
+        navigate('/notes')
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+
   }
-  console.log(formData);
 
   return (
     <>
@@ -25,14 +41,14 @@ export default function SignupPage() {
       <div className="login-page">
         <h1 className="login">Please LogIn</h1>
         <div className="login-form">
-          <label id="email-label" htmlFor="email"></label>
+          <label id="email-label" htmlFor="username"></label>
           <input
-            name="email"
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleForm}
+            name="username"
+            id="username"
+            type="text"
+            placeholder="User name"
+            value={formData.username}
+            onChange={(e) => handleForm(e)}
           />
           <label id="password-label" htmlFor="password"></label>
           <input
@@ -41,33 +57,11 @@ export default function SignupPage() {
             type="password"
             placeholder="Password..."
             value={formData.password}
-            onChange={handleForm}
+            onChange={() => handleForm}
           />
           <button
             className="login-btn"
-            onClick={async () => {
-              try {
-                alert("btn clicked");
-                const response = await fetch("http://localhost:8000/login",  {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ 
-                    email: formData.email,
-                    password: formData.password
-                   }),
-                });
-                const data = await response.json();
-                console.log(data)
-                if (response.status === 201){
-                  localStorage.setItem("jwtToken", data.jwtToken);
-                  window.location.href = '/notes'
-                }
-              } catch (error) {
-                console.log(error.message);
-              }
-            }}
+            onClick={() => userLogin()}
           >
             Login
           </button>
