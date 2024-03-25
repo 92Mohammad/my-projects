@@ -24,21 +24,21 @@
     border: 2px solid  white;
 }
 .sign-up, .login {
-    color: white;
+    color: black;
 }
 ::placeholder{
-    color: white;
+    color: black;
 }
 
 
-#email, #password, #confirmPassword {
+#email, #password, #username {
     border: none;
     border-bottom: 1px solid black;
     outline: none;    
     font-size: 14px;
     padding: 10px;
     background: transparent;
-    color: white;
+    color: black;
 }
 .signup-btn,.login-btn{
     border: none;
@@ -46,13 +46,13 @@
     border-radius: 3px;
     padding: 12px;
     cursor: pointer;
-    color: white;
+    color: black;
     background: transparent;
-    border: 1px solid white;
+    border: 1px solid black;
     font-size: 15px;
 }
 .account-availability {
-    color: white;
+    color: black;
     text-align: center;
 }
 .account-availability a {

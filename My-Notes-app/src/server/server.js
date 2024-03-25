@@ -1,10 +1,10 @@
-const express = require('express')
+import express from 'express'
 const app = express()
-const PORT = process.env.PORT || 8000
-const cors = require('cors')
-const connection = require('./connectDB')
-const jwt = require('jsonwebtoken')
+import cors from 'cors'
+import jwt  from 'jsonwebtoken'
+
 const bcrypt = require('bcrypt')
+
 app.use(express.json())
 app.use(cors())
 
@@ -14,93 +14,8 @@ app.get('/', (req, res) => {
     res.send("hello world")
 })
 
-app.post('/signup', (req, res) => {
-    const { email, password, confirmPassword } = req.body;
-    console.log(email, password)
 
 
-    if (password !== confirmPassword) {
-        return res.json({ message: "Incorrect! password" })
-
-    }
-
-    const sql = 'SELECT * FROM users WHERE user_email = ?'
-    connection.query(sql, [email], async (err, results) => {
-        if (err) {
-            console.log("Failed query: ", err.message);
-        }
-        else {
-            if (results.length != 0) {
-                // It means that the email alredy exist
-                return res.json({ message: "Email already exist" })
-            }
-            else {
-                // Insert the new user into database
-
-                try {
-
-                    const hashPassword = await bcrypt.hash(password, 10)
-                    const newUser = [email, hashPassword]
-                    const sql2 = 'INSERT INTO users(user_email, user_password) VALUES(?, ?)'
-                    connection.query(sql2, newUser, (err, results) => {
-                        if (err) {
-                            console.log("query failed: ", err.message);
-                        }
-                        else {
-                            return res.status(201).json({ message: "User created successfully", hashPassword: hashPassword })
-                        }
-                    })
-                } catch (error) {
-                    return res.status(400).send({ message: error.message });
-                }
-
-            }
-        }
-    })
-})
-
-
-app.post('/login', async (req, res) => {
-
-    const { email, password } = req.body
-    try {
-
-        const sql = 'SELECT * FROM users WHERE user_email = ?'
-        connection.query(sql, [email], async (err, results) => {
-            if (err) {
-                console.log("Failed query: ", err.message);
-            }
-            else {
-                // It can be possible that user enter a wrong password so wen need  to chekc here
-                if (results.length === 0) {
-                    // means that user with the email does not exist
-                    return res.send({ message: "Email not found" })
-                }
-
-                const userPassword = results[0].user_password
-
-                if (await bcrypt.compare(password, userPassword)) {
-                    // lets create a token so that we can identify the user in future request
-                    const userId = { userId: results[0].user_id }
-                    const token = jwt.sign(userId, process.env.JWT_SECRET)
-
-                    return res.status(201).send({ jwtToken: token })
-
-                }
-                else {
-                    return res.status(400).send({ message: "Incorrect!! password" })
-
-                }
-            }
-        })
-
-    }
-    catch (error) {
-        return res.status(400).send({ message: error.message })
-    }
-
-
-})
 
 app.post('/logout', auth, (req, res) => {
     const token = req.headers["authorization"]
@@ -315,7 +230,3 @@ app.get('/getContent', async (req, res) => {
     }   
 })
 
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
-})

@@ -112,14 +112,9 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
         },
       }
       const response = await fetch("http://localhost:8000/logout", logOutParameter);
-      if (response.status === 200) {  
-        //means that user successfully logout
-        //  delete the token from localStorage
+      if (response.status === 200) {
         localStorage.removeItem("jwtToken");
-
-        // navigate the user to home page
         navigate('/')
-        // window.location.href = "/";
       }
     } catch (error: any) {
       console.log(error.message);
@@ -132,7 +127,7 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
         <div className="logo">
           <span className="logo-title">My Notes</span>
           <div className="user">
-            <BiChevronDown className="down-arrow" onClick={openDropdown} />
+            <BiChevronDown className="down-arrow" onClick={() => openDropdown() } />
             <BiSolidUserCircle className="user-icon" />
           </div>
 
@@ -161,7 +156,8 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
             noteId={note.note_id}
             title={note.note_title}
             getAllOpenTab = {getAllOpenTab}
-            getAllNotes = {getAllNotes}
+            setNotes={ setNotes }
+            notes = {notes}
             // openNewNoteEditor = {props.openEditor}
             // define the function of opening a new editor associated with the current Note in side baar
           />

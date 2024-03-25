@@ -1,5 +1,4 @@
 import NavBar from "./NavBar";
-
 import "../css/home.css";
 import background from "../images/student-study-table.jpg";
 import { Link } from "react-router-dom";
@@ -11,7 +10,6 @@ export default function Home() {
     if (token){
       window.location.href = '/notes';
     }
-
   }, [])
 
   return (

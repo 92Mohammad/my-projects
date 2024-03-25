@@ -37,7 +37,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar isHome = {false}/>
       <div className="login-page">
         <h1 className="login">Please LogIn</h1>
         <div className="login-form">

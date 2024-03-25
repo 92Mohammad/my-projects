@@ -107,7 +107,14 @@ export default function NotePage() {
                 <div className='tabs-and-save-btn'>
                     <div className='window-container'>
                         {tabs.map((tab, index) => {
-                            return <Window key={index} noteId = {tab.note_id} title={tab.note_title} currentTab = {tab.currentTab} getAllOpenTab = {getAllOpenTab} getContent = {getContent} />
+                            return <Window
+                                key={index}
+                                note_id = {tab.note_id}
+                                note_title ={tab.note_title}
+                                currentTab = {tab.currentTab}
+                                getAllOpenTab = {getAllOpenTab}
+                                getContent = {getContent}
+                            />
                         })}
                     </div>
                     <div className='save-content-btn-div'><button onClick = {saveContent}className='save-content-btn'>Save</button></div>

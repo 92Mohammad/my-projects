@@ -1,4 +1,4 @@
-
+import React from 'react'
 
 export interface User {
     username: string
@@ -39,4 +39,14 @@ export interface InputBoxProps {
 
 export interface ButtonProps {
     openInputBox: () => void
+}
+
+export interface NotesProps extends SideBarProps {
+    noteId: number,
+    title: string,
+    notes: Note[]
+    setNotes: React.Dispatch<React.SetStateAction<Note[]>>
+}
+export interface WindowProps extends Tab, SideBarProps {
+    getContent: () => Promise<void>
 }
