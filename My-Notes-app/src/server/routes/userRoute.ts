@@ -4,13 +4,23 @@ const router = express.Router();
 import bcrypt from 'bcrypt'
 import User from '../models/user.model'
 
+interface SignUp {
+    username: string,
+    email: string,
+    password: string
+}
+
+interface Login {
+    username: string,
+    password: string
+}
 
 
 router.post('/signup', async(req, res) => {
     const { username, email, password } = req.body;
     console.log(email, password)
     try {
-        const user = await User.findOne({username});
+        const user = await User.findOne({username}) as SignUp;
         if (!user){
             //add new user to database
             const hashedPassword = await bcrypt.hash(password, 10)
@@ -36,7 +46,7 @@ router.post('/login', async (req, res) => {
 
     const { username, password } = req.body
     try {
-        const user = await User.findOne({ username: username});
+        const user = await User.findOne({ username: username}) as Login;
         if (!user){
             return res.status(402).json( { message: "User Not found"});
         }
