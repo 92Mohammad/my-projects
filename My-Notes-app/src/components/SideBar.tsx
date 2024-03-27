@@ -24,8 +24,9 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
   });
 
   const [notes, setNotes] = useState<Note[]>([]);
-  const [logout, setLogout] = useState<boolean>(false);
 
+  const [logout, setLogout] = useState<boolean>(false);
+  console.log('note state: ', notes)
   function openInputBox() {
     setClick((prevClick) => {
       return {
@@ -38,6 +39,7 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
 
   const createNotes = async (Title: string) => {
     try {
+      console.log("hello there")
       const createNoteParameter: RequestParameter = {
         method: "POST",
         headers: {
@@ -47,9 +49,10 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
         body: JSON.stringify({ title: Title }),
       }
 
-      const response = await fetch("http://localhost:8000/createNotes", createNoteParameter);
+      const response = await fetch("http://localhost:8000/note/createNotes", createNoteParameter);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        console.log("success")
         setClick((prevClick) => {
           return {
             ...prevClick,
@@ -60,10 +63,12 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
         // when a new note added successfully then call the getAllNotes method to fetch the all notes along with the new notes
         const data = await response.json();
         const newNote: Note = {
-          note_id: data.note_id,
-          note_title: Title
+          _id: data.note_id,
+          title: Title
         }
+        console.log("before set Note ")
         setNotes((prevNote) => [...prevNote, newNote])
+        console.log('after setNote')
       }
     } catch (error: any) {
       console.log(error.message);
@@ -80,11 +85,12 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
           authorization: localStorage.getItem("jwtToken")!,
         },
       }
-        const res = await fetch("http://localhost:8000/notes", getNotesParameter);
+        const res = await fetch("http://localhost:8000/note/getAllNotes", getNotesParameter);
 
         if (res.status === 200) {
             const data = await res.json();
-            setNotes(data);
+            console.log('get all notes :  ', data)
+            setNotes(data.notes);
         }
     } catch (error: any) {
         console.log(error.message);
@@ -111,7 +117,7 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
           authorization: localStorage.getItem("jwtToken")!,
         },
       }
-      const response = await fetch("http://localhost:8000/logout", logOutParameter);
+      const response = await fetch("http://localhost:8000/user/logout", logOutParameter);
       if (response.status === 200) {
         localStorage.removeItem("jwtToken");
         navigate('/')
@@ -150,11 +156,11 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
           {click.openInput && <InputBox createNotes={createNotes} />}
           {click.closeInput && <CreateNoteButton openInputBox={openInputBox} />}
         </div>
-        {notes.map((note, index) => (
+        {notes.length !== 0 && notes.map((note, index) => (
           <Notes
             key={index}
-            noteId={note.note_id}
-            title={note.note_title}
+            noteId={note._id}
+            title={note.title}
             getAllOpenTab = {getAllOpenTab}
             setNotes={ setNotes }
             notes = {notes}
@@ -168,7 +174,7 @@ export default function SideBar({getAllOpenTab}: SideBarProps) {
 }
 
 function InputBox({ createNotes }: InputBoxProps) {
-  const [input, setInput] = useState<string>("");
+  const [noteTitle, setNoteTitle] = useState<string>("");
 
   return (
     <>
@@ -176,9 +182,17 @@ function InputBox({ createNotes }: InputBoxProps) {
         <input
             placeholder="Note..."
             type="text"
-            onChange= {(e) => setInput(e.target.value)}
+            onChange= {(e) => setNoteTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.code === "Enter"){
+                console.log("inside key down")
+                createNotes(noteTitle)
+              }
+            }}
         />
-        <button onClick={() => createNotes(input)}>+ Create</button>
+        <button onClick={() => createNotes(noteTitle)}>
+          + Create
+        </button>
       </div>
     </>
   );

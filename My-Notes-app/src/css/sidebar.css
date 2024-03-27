@@ -74,21 +74,45 @@
 }
 .left-part{
     display: flex;
+    flex: 2;
     height: 100%;
     align-items: center;
     gap: 5px;;
     cursor: pointer;
+
+}
+.right-note-part {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    gap: 5px;
+
 }
 
 .note-title{
     margin: 0;
 }
+.edit-title {
+    outline: none;
+    border: none;
+    padding: 4px;
+    width: 150px;
+}
+.edit-btn{
+    cursor: pointer;
+    padding: 5px
+}
 .delete-btn{
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px;
     height: 100%;
     color: crimson;
     cursor: pointer;
+}
+
+.edit-btn:hover,  .delete-btn:hover {
+    background-color: #9bc5c3;
 }
 .input-title{
     display: flex;

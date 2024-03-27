@@ -10,16 +10,17 @@ export default function LoginPage() {
       password: "",
   });
   const navigate = useNavigate();
-
+  console.log('form data: ', formData)
   const userLogin = async() => {
     try {
-      const response = await fetch("http://localhost:8000/login",  {
+
+      const response = await fetch("http://localhost:8000/user/login",  {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: formData.email,
+          username: formData.username,
           password: formData.password
         }),
       });
@@ -57,7 +58,7 @@ export default function LoginPage() {
             type="password"
             placeholder="Password..."
             value={formData.password}
-            onChange={() => handleForm}
+            onChange={(e) => handleForm(e)}
           />
           <button
             className="login-btn"

@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import auth from '../middleware/jwtAuthenticate'
 import User from '../models/user.model'
 
+
 interface SignUp {
     _id: string,
     username: string,
@@ -21,14 +22,13 @@ interface Login {
 
 router.post('/signup', async(req, res) => {
     const { username, email, password } = req.body;
-    console.log(email, password)
     try {
-        const user = await User.findOne({username}) as SignUp;
+        const user = await User.findOne({userName: username}) as SignUp;
         if (!user){
             //add new user to database
             const hashedPassword = await bcrypt.hash(password, 10)
             const newUser = await User.create({
-                username: username,
+                userName: username,
                 email: email,
                 password: hashedPassword
             })
@@ -48,15 +48,18 @@ router.post('/signup', async(req, res) => {
 router.post('/login', async (req, res) => {
 
     const { username, password } = req.body
+
     try {
-        const user = await User.findOne({ username: username}) as Login;
+        const user = await User.findOne({ userName: username}) as Login;
+
         if (!user){
             return res.status(402).json( { message: "User Not found"});
         }
         else {
             const matchPassword = await bcrypt.compare(password, user.password)
             if (matchPassword){
-                const token = jwt.sign({ userId: user._id } , process.env.JWT_SECRET!, { expiresIn: 'id'} )
+                console.log()
+                const token = jwt.sign({ userId: user._id } , process.env.JWT_SECRET!, { expiresIn: '1d'} )
                 return res.status(201).json({message: 'login successfully' ,  jwtToken: token })
             }
         }

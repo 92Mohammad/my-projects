@@ -7,13 +7,21 @@ const noteSchema = new mongoose.Schema({
     },
 
     content: {
-        type: String,
-        require: true
+        type: String
+    },
+    selectedTab: {
+        type: Boolean,
+        default: false
+    },
+    openTab: {
+        type: Boolean,
+        default: false
     },
 
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        require: true
     },
 
 })

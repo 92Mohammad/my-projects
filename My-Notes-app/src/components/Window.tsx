@@ -1,21 +1,23 @@
 import '../css/window.css'
 import { RxCross2 } from "react-icons/rx";
 import { useState } from 'react';
-import { WindowProps } from "../utils";
+import {RequestParameter, WindowProps} from "../utils";
 
-export default function Window({note_id, note_title, currentTab, getContent, getAllOpenTab}: WindowProps ){
+export default function Window({_id, title, currentTab, getContent, getAllOpenTab}: WindowProps ){
     // const [currentTab, setCurrentTab] = useState({})
-    const closeOpenTab = async (noteId: number) => {
+    const closeOpenTab = async (noteId: string) => {
         try {
-            const response = await fetch('http://localhost:8000/closeOpenTab', {
+            const closeTabParameter: RequestParameter  = {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    authorization: localStorage.getItem("jwtToken")!
                 },
                 body: JSON.stringify({
                     note_id: noteId
                 })
-            })
+            }
+            const response = await fetch('http://localhost:8000/tab/closeOpenTab', closeTabParameter)
 
             if (response.status === 200){ 
                 await getAllOpenTab();
@@ -27,9 +29,9 @@ export default function Window({note_id, note_title, currentTab, getContent, get
     }
    
 
-    const setAsCurrentTab = async(noteId: number) => {
+    const setAsCurrentTab = async(noteId: string) => {
         try{
-            const response = await fetch('http://localhost:8000/setCurrentTab', {
+            const response = await fetch('http://localhost:8000/tab/select-tab', {
                 method: "POST", 
                 headers: {
                     "Content-Type": "application/json"
@@ -55,11 +57,11 @@ export default function Window({note_id, note_title, currentTab, getContent, get
     return (
         <div 
             className={currentTab ? "current-tab" : "window"}
-            onClick={() => setAsCurrentTab(note_id)}
+            onClick={() => setAsCurrentTab(_id)}
         >
-            <span className="title">{note_title}</span>
+            <span className="title">{title}</span>
             <div  className={ currentTab ? "current-tab-close-btn" : "close-btn"} >
-                <RxCross2 onClick={() => closeOpenTab(note_id)}/>
+                <RxCross2 onClick={() => closeOpenTab(_id)}/>
             </div>
         </div>
     )

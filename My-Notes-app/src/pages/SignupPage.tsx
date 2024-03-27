@@ -13,8 +13,9 @@ export default function SignupPage() {
   const navigate = useNavigate();
 
   const createNewUser = async () => {
+    console.log('user form data: ', formData);
     try {
-      const signUpUrl = 'http://localhost:8000/signup'
+      const signUpUrl = 'http://localhost:8000/user/signup'
       const response = await fetch(signUpUrl, {
         method: "POST",
         headers: {
@@ -24,7 +25,6 @@ export default function SignupPage() {
       })
       if (response.status === 201) {
         navigate('/login')
-        // window.location.href = "/login"
       }
     } catch (error: any) {
       console.log(error.message)

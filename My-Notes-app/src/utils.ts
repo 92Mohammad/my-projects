@@ -18,8 +18,8 @@ export interface SideBarProps {
 }
 
 export interface Tab {
-    note_id: number,
-    note_title: string,
+    _id: string,
+    title: string,
     currentTab: number
 }
 
@@ -29,8 +29,8 @@ export interface EditorProps {
 }
 
 export interface Note {
-    note_id: number,
-    note_title: string
+    _id: string,
+    title: string
 }
 
 export interface InputBoxProps {
@@ -42,7 +42,7 @@ export interface ButtonProps {
 }
 
 export interface NotesProps extends SideBarProps {
-    noteId: number,
+    noteId: string,
     title: string,
     notes: Note[]
     setNotes: React.Dispatch<React.SetStateAction<Note[]>>

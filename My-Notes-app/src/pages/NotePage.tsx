@@ -55,10 +55,10 @@ export default function NotePage() {
         try{
             // first find the note_id of the current tab
             const currentTab = tabs.filter((tab) => tab.currentTab === 1)
-            const noteIdOfCurrentTab = currentTab[0].note_id;
+            const noteIdOfCurrentTab = currentTab[0]._id;
 
 
-            const response = await fetch('http://localhost:8000/saveContent', {
+            const response = await fetch('http://localhost:8000/note/saveContent', {
                 method: 'POST',
                 headers:{
                     "Content-Type": "application/json"
@@ -78,7 +78,7 @@ export default function NotePage() {
     
   const getContent = async() => {
     try {
-      const response = await fetch('http://localhost:8000/getContent', {
+      const response = await fetch('http://localhost:8000/note/getContent', {
         method: "GET"
       })
       if (response.status === 200){
@@ -109,8 +109,8 @@ export default function NotePage() {
                         {tabs.map((tab, index) => {
                             return <Window
                                 key={index}
-                                note_id = {tab.note_id}
-                                note_title ={tab.note_title}
+                                _id = {tab._id}
+                                title ={tab.title}
                                 currentTab = {tab.currentTab}
                                 getAllOpenTab = {getAllOpenTab}
                                 getContent = {getContent}
