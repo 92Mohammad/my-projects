@@ -4,11 +4,12 @@ import { IoMenu } from "react-icons/io5";
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 import { homePageProps } from "pages/HomePage";
-import { RequestParameter} from "pages/TodoPage";
+
 
 
 export default function Header({isLogin}: homePageProps ) {
   const navigate = useNavigate();
+  
   const logOut = async(): Promise<void> =>{
     const payload: RequestParameter= {
       method: "POST",
