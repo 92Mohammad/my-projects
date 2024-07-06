@@ -1,4 +1,4 @@
-import express from 'express'
+import express, {Request, Response} from 'express'
 import jwt from 'jsonwebtoken'
 import { parseInputData} from "../inputValidation";
 import { ResultSetHeader, RowDataPacket } from "mysql2"
@@ -6,13 +6,12 @@ import auth from '../middleware'
 import  connection  from "../connectDB";
 const router = express.Router();
 
-
 export interface User extends RowDataPacket{
     user_id?: number,
     email: string,
     password: string,
 }
-router.post('/signup', parseInputData, (req, res) =>{
+router.post('/signup', parseInputData, (req: Request, res: Response) =>{
 
     const {email, password} = req.body;
 
@@ -42,7 +41,7 @@ router.post('/signup', parseInputData, (req, res) =>{
 
 
 
-router.post('/login', parseInputData,  (req, res) => {
+router.post('/login', parseInputData,  (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     const query1 = 'SELECT * FROM users WHERE user_email = ?'
@@ -71,7 +70,7 @@ router.post('/login', parseInputData,  (req, res) => {
 
 
 
-router.post('/logout', auth, async (req, res) => {
+router.post('/logout', auth, async (_, res: Response) => {
 
     return res.status(200).json({
         message: ' user successfully logout'

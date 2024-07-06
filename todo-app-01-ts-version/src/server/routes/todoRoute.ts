@@ -1,15 +1,16 @@
 import connection from '../connectDB';
 import { ResultSetHeader, RowDataPacket } from "mysql2"
-import express from 'express';
+import express, {Request, Response} from 'express';
 const router = express.Router();
 
 interface Todo extends  RowDataPacket{
     todo_id: number,
     task: string,
 }
-router.get('/getAllTodo', (req, res) => {
+
+router.get('/getAllTodo', (req: Request, res: Response) => {
     const  userId   = req.headers["userId"];
-    console.log('get all todos')
+
     const sql =  'SELECT todo_id, task FROM todos WHERE userId = ?'
     connection.query<Todo[]>(sql, [userId], (err, results) => {
         if (err){
@@ -20,13 +21,12 @@ router.get('/getAllTodo', (req, res) => {
             return res.status(200).json(results)
         }
     })
-})
+});
 
 
-router.post('/createNewTodo',(req, res) => {
+router.post('/createNewTodo',(req: Request, res: Response) => {
     const { task } = req.body;
 
-    console.log(task);
     const loggedUserId = req.headers["userId"];
     if(!task || !loggedUserId){
         return res.status(401).send({ message: "Please fulfill the input box" })
@@ -38,16 +38,13 @@ router.post('/createNewTodo',(req, res) => {
             console.error("Query failed in createTodo method : ", err.message)
         }
         else {
-            console.log('here')
             return res.status(201).send({ message: "todo created successfully" , todo_id: results.insertId})
         }
     })
-})
+});
 
-router.patch('/updateTodoTitle', (req, res) => {
+router.patch('/updateTodoTitle', (req: Request, res: Response) => {
     const { todoId, title } = req.body
-    console.log(todoId, title )
-
 
     const sql = 'UPDATE todos SET task = ? WHERE todo_id = ?'
     connection.query<ResultSetHeader>(sql, [title, todoId], async (err, results) => {
@@ -61,7 +58,7 @@ router.patch('/updateTodoTitle', (req, res) => {
             return res.status(200).json({message: "todo updated successfully"})
         }
     })
-})
+});
 
 
 router.post('/deleteTodo', (req, res) => {
@@ -79,6 +76,6 @@ router.post('/deleteTodo', (req, res) => {
             return res.status(202).json({ message: "task deleted successfully"})
         }
     })
-})
+});
 
 export default router;
