@@ -88,7 +88,8 @@ body {
    /* background: gold; */
 }
 .todoPage{
-    background-image: url('../images/todo-image.jpg');
+    /* background-image: url('../images/todo-image.jpg'); */
+    background-color: #0b1120;
     position: fixed;
     top: 0;
     left: 0;
@@ -108,9 +109,7 @@ body {
     column-gap: 10px;
     margin-bottom: 20px;
     margin-top: 50px;
-    width: 900px;
-    /* background: red; */
-    
+    width: 900px;    
 }
 .read-todo-section input , button{
     padding: 10px;
@@ -268,5 +267,4 @@ body {
     .middle-header{
         display: none;
     }
-
 }

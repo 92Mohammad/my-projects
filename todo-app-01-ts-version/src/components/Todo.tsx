@@ -1,13 +1,12 @@
 import {MdDelete, MdEdit} from "react-icons/md";
 import React, {useEffect, useRef, useState} from "react";
 import { updateTitle, deleteTodo } from "../features/todos/todosSlice";
-import { useAppDispatch, RootState } from "../app/store";
+import { useAppDispatch } from "../app/store";
 
 interface TodoProps  {
     id: number,
     title: string,
 }
-
 
 export const Todo = ({id, title}: TodoProps) => {
 

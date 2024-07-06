@@ -53,7 +53,6 @@ export const createTodo = createAsyncThunk('/todos/createTodo', async(title: str
               task: title,
             }
             dispatch(addTodo(newTodoItem ));
-            // dispatch(setTitle(""));
 
           }
         }
@@ -77,11 +76,7 @@ export const updateTitle = createAsyncThunk('/todos/updateTitle', async({id, new
                 title: newTitle
             })
         })
-        const data = await res.json();
-        console.log('update response: ', data);
         if (res.status === 200){
-          
-            console.log('update todo response: ', data)
             const state = getState() as RootState;
             const {todos} = state.todo;
             const updatedTodo = todos.map(todo => todo.todo_id === id ? {...todo, task: newTitle} : todo);
@@ -114,7 +109,6 @@ export const deleteTodo = createAsyncThunk('/todos/deleteTodo', async(id: number
             const state = getState() as RootState;
             const { todos } = state.todo;
             const remainingTodos = todos.filter(todo => todo.todo_id !== id);
-            console.log('all remaining todos after deletion: ', remainingTodos)
             dispatch(setTodos(remainingTodos));
         }
     } catch (error) {

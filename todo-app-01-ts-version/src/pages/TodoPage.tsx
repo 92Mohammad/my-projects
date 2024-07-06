@@ -11,7 +11,6 @@ export default function TodoPage() {
 
   const inputTitleRef = useRef<HTMLInputElement>(null);
 
-  console.log('re-render todoPage')
 
   useEffect((): void => {
     const token: string = localStorage.getItem("token")!
@@ -34,7 +33,7 @@ export default function TodoPage() {
   return (
     <>
       <Header isLogin={true} />
-      <main className="todoPage">
+      <main className="todoPage" style = {{backgroundColor: "#0b1120"}}>
         <div className="read-todo-section">
           <input
             ref = {inputTitleRef}

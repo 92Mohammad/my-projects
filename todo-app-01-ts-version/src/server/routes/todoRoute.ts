@@ -17,7 +17,6 @@ router.get('/getAllTodo', (req: Request, res: Response) => {
             console.error("Query failed in getTodo method : ", err.message)
         }
         else {
-            console.log('get all todos: ', results);
             return res.status(200).json(results)
         }
     })

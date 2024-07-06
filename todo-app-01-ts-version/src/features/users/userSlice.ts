@@ -70,11 +70,9 @@ export const LogOut = createAsyncThunk('/user/LogOut', async() => {
     
         const data = await response.json()
         if (response.status === 200){
-            console.log('logout...')
             localStorage.removeItem("token");
             window.location.href = '/'
         }
-        console.log('this is logout response; ', data)
     }
     catch(error: any){
         console.log("Error occurred: ", error.message)
@@ -124,7 +122,6 @@ export const userSlice = createSlice({
         })
         builder.addCase(LogIn.fulfilled, (state, action) => {
             state.success = true;
-            console.log('fulfilled: ', action.payload);
             localStorage.setItem("token", action.payload.token);
         })
     }
