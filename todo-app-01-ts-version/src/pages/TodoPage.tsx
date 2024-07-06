@@ -2,20 +2,14 @@ import  { useEffect, useState} from "react";
 import Header from "../components/Header";
 import {Todo} from "../components/Todo";
 import { useNavigate } from "react-router-dom";
-import { getTodos, setTitle, createTodo } from "features/todos/todosSlice";
+import { getTodos, setTitle, createTodo } from "../features/todos/todosSlice";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch  } from "app/store";
-
-
-
+import { RootState, useAppDispatch  } from "../app/store";
 
 export default function TodoPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const {inputTitle, todos } = useSelector((state: RootState) => state.todos);
-  
-  
-  
+  const {inputTitle, todos } = useSelector((state: RootState) => state.todo);
   
   useEffect((): void => {
     const token: string = localStorage.getItem("token")!
@@ -25,10 +19,8 @@ export default function TodoPage() {
   }, [])
 
   useEffect(() => {
-    getTodos();
+    dispatch(getTodos());
   }, [])
-
-
 
   return (
     <>

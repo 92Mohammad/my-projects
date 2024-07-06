@@ -1,9 +1,7 @@
 import {MdDelete, MdEdit} from "react-icons/md";
 import React, {useEffect, useRef, useState} from "react";
-import { updateTitle, setEdit, deleteTodo } from "features/todos/todosSlice";
-import { useAppDispatch, RootState } from "app/store";
-import { useSelector } from "react-redux";
-
+import { updateTitle, deleteTodo } from "../features/todos/todosSlice";
+import { useAppDispatch, RootState } from "../app/store";
 
 interface TodoProps  {
     id: number,
@@ -14,8 +12,8 @@ interface TodoProps  {
 export const Todo = ({id, title}: TodoProps) => {
 
     const dispatch = useAppDispatch();
-    const { edit } = useSelector((state: RootState) => state.todos)
-
+    const [edit, setEdit] = useState<boolean>(false);
+    
     const [editTitle, setEditTitle] = useState<string>(title);
     const [checkBox, setCheckBox] = useState<boolean>(false);
     
@@ -24,6 +22,10 @@ export const Todo = ({id, title}: TodoProps) => {
     function handleChange(event: React.FormEvent<EventTarget> ) {
         const {checked} = event.target as HTMLInputElement;
         setCheckBox(checked);
+    }
+    const handleUpdateTitle = () => {
+        setEdit(prevEdit => !prevEdit)
+        dispatch(updateTitle({id, newTitle: editTitle}))
     }
 
 
@@ -56,7 +58,7 @@ export const Todo = ({id, title}: TodoProps) => {
                             onChange={(e) =>  setEditTitle(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.code === "Enter" && editTitle !== " "){
-                                dispatch(updateTitle({id, newTitle: editTitle}))
+                                    handleUpdateTitle();
                                 }
                             }}
                         />
@@ -70,7 +72,7 @@ export const Todo = ({id, title}: TodoProps) => {
             <div className="right-tods-section">
             <MdEdit
                     className="edit-btn"
-                    onClick = {() => dispatch(setEdit(true))}
+                    onClick = {() => setEdit(prevEdit => !prevEdit)}
                 />
                 <MdDelete
                     className="delete-btn"

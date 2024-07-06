@@ -2,10 +2,8 @@ import { Link } from 'react-router-dom'
 import Header from "../components/Header";
 import image from "../images/background-image.jpg"
 import "./home.css";
+import {homePageProps} from '../types/utils'
 
-export interface homePageProps {
-    isLogin: boolean
-}
 export default function Homepage({isLogin}: homePageProps) {
 
   return (

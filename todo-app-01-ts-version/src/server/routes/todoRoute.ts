@@ -9,6 +9,7 @@ interface Todo extends  RowDataPacket{
 }
 router.get('/getAllTodo', (req, res) => {
     const  userId   = req.headers["userId"];
+    console.log('get all todos')
     const sql =  'SELECT todo_id, task FROM todos WHERE userId = ?'
     connection.query<Todo[]>(sql, [userId], (err, results) => {
         if (err){
@@ -24,6 +25,8 @@ router.get('/getAllTodo', (req, res) => {
 
 router.post('/createNewTodo',(req, res) => {
     const { task } = req.body;
+
+    console.log(task);
     const loggedUserId = req.headers["userId"];
     if(!task || !loggedUserId){
         return res.status(401).send({ message: "Please fulfill the input box" })
@@ -35,14 +38,16 @@ router.post('/createNewTodo',(req, res) => {
             console.error("Query failed in createTodo method : ", err.message)
         }
         else {
+            console.log('here')
             return res.status(201).send({ message: "todo created successfully" , todo_id: results.insertId})
         }
     })
 })
 
-router.patch('/updateTodo', (req, res) => {
+router.patch('/updateTodoTitle', (req, res) => {
     const { todoId, title } = req.body
     console.log(todoId, title )
+
 
     const sql = 'UPDATE todos SET task = ? WHERE todo_id = ?'
     connection.query<ResultSetHeader>(sql, [title, todoId], async (err, results) => {

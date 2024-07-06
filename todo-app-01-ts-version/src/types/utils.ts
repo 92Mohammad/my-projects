@@ -12,5 +12,14 @@ export interface updateTodoTitleParameter {
     newTitle: string
 }
 
+export interface UserSignUpParameter {
+    email: string;
+    password: string
+}
+
+export interface homePageProps {
+    isLogin: boolean
+}
+
 export const BASE_URL = 'http://localhost:8000';
   

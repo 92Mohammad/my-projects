@@ -8,14 +8,14 @@
     "module": "es2020",
     // "rootDir": "./",
      "moduleResolution": "node10",
-     "baseUrl": "./",
+     "baseUrl": "./src",
      "paths": {
        "*": ["src/*"]
      },
     // "rootDirs": [],
-     "typeRoots": ["node_modules/@types"],
-     "declaration": true,
-     "noEmit": true,
+    "typeRoots": ["node_modules/@types"],
+    "declaration": true,
+    "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

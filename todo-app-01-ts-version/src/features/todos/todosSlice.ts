@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { TodoArray, BASE_URL, updateTodoTitleParameter } from "types/utils";
+import { TodoArray, BASE_URL, updateTodoTitleParameter } from "../../types/utils";
 import { RootState} from '../../app/store'
+
 export interface TodoState { 
     todos: TodoArray[];
     inputTitle: string;
-    edit: boolean
 }
 
 const todoInitialValue: TodoState = {
     todos: [],
     inputTitle: "",
-    edit: false
 }
 
 
@@ -47,8 +46,9 @@ export const createTodo = createAsyncThunk('/todos/createTodo', async(title: str
               task: title,
             }),
           }) ;
+          const data = await response.json();
           if (response.status === 201) {
-            const data = await response.json();
+            
             // add new todo over here
             const newTodoItem: TodoArray = {
               todo_id: data.todo_id,
@@ -79,15 +79,15 @@ export const updateTitle = createAsyncThunk('/todos/updateTitle', async({id, new
                 title: newTitle
             })
         })
-
+        const data = await res.json();
+        console.log('update response: ', data);
         if (res.status === 200){
-            const data = await res.json();
+          
             console.log('update todo response: ', data)
             const state = getState() as RootState;
-            const {todos} = state.todos;
+            const {todos} = state.todo;
             const updatedTodo = todos.map(todo => todo.todo_id === id ? {...todo, task: newTitle} : todo);
             dispatch(setTodos(updatedTodo));
-            dispatch(setEdit(false))
         }
 
     }
@@ -114,7 +114,7 @@ export const deleteTodo = createAsyncThunk('/todos/deleteTodo', async(id: number
         if (response.status === 202) {
             // filter the todos over here
             const state = getState() as RootState;
-            const { todos } = state.todos;
+            const { todos } = state.todo;
             const remainingTodos = todos.filter(todo => todo.todo_id !== id);
             console.log('all remaining todos after deletion: ', remainingTodos)
             dispatch(setTodos(remainingTodos));
@@ -138,12 +138,8 @@ export const todoSlice = createSlice({
         setTitle: (state, action: PayloadAction<string>) => {
             state.inputTitle = action.payload;
         },
-        setEdit: (state, action: PayloadAction<boolean>) => {
-            state.edit = action.payload
-        }
     }
 });
 
-
-export const { setTodos, addTodo, setTitle, setEdit } = todoSlice.actions;
 export default todoSlice.reducer;
+export const { setTodos, addTodo, setTitle } = todoSlice.actions;
