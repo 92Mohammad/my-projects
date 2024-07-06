@@ -1,4 +1,4 @@
-import connection from '../connectDB';
+import sql from '../connectDB';
 import { ResultSetHeader, RowDataPacket } from "mysql2"
 import express, {Request, Response} from 'express';
 const router = express.Router();
@@ -11,8 +11,8 @@ interface Todo extends  RowDataPacket{
 router.get('/getAllTodo', (req: Request, res: Response) => {
     const  userId   = req.headers["userId"];
 
-    const sql =  'SELECT todo_id, task FROM todos WHERE userId = ?'
-    connection.query<Todo[]>(sql, [userId], (err, results) => {
+    const query =  'SELECT todo_id, task FROM todos WHERE userId = ?'
+    sql.query<Todo[]>(query, [userId], (err, results) => {
         if (err){
             console.error("Query failed in getTodo method : ", err.message)
         }
@@ -32,8 +32,8 @@ router.post('/createNewTodo',(req: Request, res: Response) => {
         return res.status(401).send({ message: "Please fulfill the input box" })
     }
     const values = [task, loggedUserId]
-    const sql = 'INSERT INTO todos (task, userId) VALUES(?, ?)'
-    connection.query<ResultSetHeader>(sql, values, (err, results) => {
+    const query = 'INSERT INTO todos (task, userId) VALUES(?, ?)'
+    sql.query<ResultSetHeader>(query, values, (err, results) => {
         if(err){
             console.error("Query failed in createTodo method : ", err.message)
         }
@@ -46,8 +46,8 @@ router.post('/createNewTodo',(req: Request, res: Response) => {
 router.patch('/updateTodoTitle', (req: Request, res: Response) => {
     const { todoId, title } = req.body
 
-    const sql = 'UPDATE todos SET task = ? WHERE todo_id = ?'
-    connection.query<ResultSetHeader>(sql, [title, todoId], async (err, results) => {
+    const query = 'UPDATE todos SET task = ? WHERE todo_id = ?'
+    sql.query<ResultSetHeader>(query, [title, todoId], async (err, results) => {
         if (err){
             return res.status(500).json({
                 message: "Query failed for update item"
@@ -63,8 +63,8 @@ router.patch('/updateTodoTitle', (req: Request, res: Response) => {
 
 router.post('/deleteTodo', (req, res) => {
     const todoId = [req.body.todoId];
-    const sql = 'DELETE FROM todos WHERE todo_id = ?'
-    connection.query<ResultSetHeader>(sql, todoId, (err, results) => {
+    const query = 'DELETE FROM todos WHERE todo_id = ?'
+    sql.query<ResultSetHeader>(query, todoId, (err, results) => {
         if (err){
             console.error("Query failed in deleteTodo method : ", err.message)
             return res.status(404).json({

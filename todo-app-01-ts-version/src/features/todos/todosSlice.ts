@@ -4,12 +4,10 @@ import { RootState} from '../../app/store'
 
 export interface TodoState { 
     todos: TodoArray[];
-    inputTitle: string;
 }
 
 const todoInitialValue: TodoState = {
     todos: [],
-    inputTitle: "",
 }
 
 
@@ -32,10 +30,10 @@ export const getTodos = createAsyncThunk('/todos/getTodos', async(_, {dispatch})
     }  
 })
 
-export const createTodo = createAsyncThunk('/todos/createTodo', async(title: string, {dispatch}) => {
+export const createTodo = createAsyncThunk('/todos/createTodo', async(title: string | undefined, {dispatch}) => {
     try {
-        if (title !== ""){
-
+        if (title !== "" && title !== undefined){
+            console.log('title inside create todo: ',title)
           const response = await fetch(`${BASE_URL}/todo/createNewTodo`, {
             method: "POST",
             headers: {
@@ -55,7 +53,7 @@ export const createTodo = createAsyncThunk('/todos/createTodo', async(title: str
               task: title,
             }
             dispatch(addTodo(newTodoItem ));
-            dispatch(setTitle(""));
+            // dispatch(setTitle(""));
 
           }
         }
@@ -135,11 +133,8 @@ export const todoSlice = createSlice({
         setTodos: (state, action: PayloadAction<TodoArray[]>) => {
             state.todos = action.payload;
         },
-        setTitle: (state, action: PayloadAction<string>) => {
-            state.inputTitle = action.payload;
-        },
     }
 });
 
 export default todoSlice.reducer;
-export const { setTodos, addTodo, setTitle } = todoSlice.actions;
+export const { setTodos, addTodo } = todoSlice.actions;

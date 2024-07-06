@@ -9,7 +9,7 @@ import { useAppDispatch } from "../app/store";
 export default function Header({ isLogin }: homePageProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
+  console.log('re-render Header component');
 
   const SignIn = (): void => {
     navigate("/login");

@@ -45,7 +45,7 @@ export const Todo = ({id, title}: TodoProps) => {
                     type="checkbox"
                     name="isChecked"
                     checked={checkBox}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e)}
                 />
                 {
                     edit ? (
